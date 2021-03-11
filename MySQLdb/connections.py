@@ -6,6 +6,7 @@ override Connection.default_cursor with a non-standard Cursor class.
 """
 import re
 import sys
+import warnings
 
 from MySQLdb import cursors
 from MySQLdb.compat import unicode, PY2
@@ -252,7 +253,8 @@ class Connection(_mysql.connection):
         self.messages = []
 
     def decode_string_with_encoding(self, s, encoding):
-        raise NotImplementedError("Override this method.")
+        warnings.warn('mysqlclient: This method should not be getting called. Is the monkeypatch working correctly?')
+        return s.decode(encoding)
 
     def autocommit(self, on):
         on = bool(on)
