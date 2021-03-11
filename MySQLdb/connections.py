@@ -229,8 +229,9 @@ class Connection(_mysql.connection):
             return b'_binary' + db.string_literal(obj)
 
         self._last_query = None
+
         def string_decoder(s):
-            return self.decode_string_with_encoding(s, db.encoding)
+            return self.decode_string_with_encoding(s, db.encoding, self._last_query)
 
         if not charset:
             charset = self.character_set_name()
@@ -253,7 +254,7 @@ class Connection(_mysql.connection):
                 self.autocommit(autocommit)
         self.messages = []
 
-    def decode_string_with_encoding(self, s, encoding):
+    def decode_string_with_encoding(self, s, encoding, last_query):
         warnings.warn('mysqlclient: This method should not be getting called. Is the monkeypatch working correctly?')
         return s.decode(encoding)
 
