@@ -228,6 +228,7 @@ class Connection(_mysql.connection):
         def bytes_literal(obj, dummy=None):
             return b'_binary' + db.string_literal(obj)
 
+        self._last_query = None
         def string_decoder(s):
             return self.decode_string_with_encoding(s, db.encoding)
 
@@ -274,6 +275,8 @@ class Connection(_mysql.connection):
         # Since _mysql releases GIL while querying, we need immutable buffer.
         if isinstance(query, bytearray):
             query = bytes(query)
+
+        self._last_query = query
         if self.waiter is not None:
             self.send_query(query)
             self.waiter(self.fileno())
